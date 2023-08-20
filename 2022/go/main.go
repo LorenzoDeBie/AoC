@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/LorenzoDeBie/AoC/2022/go/day01"
 	"os"
 )
 
@@ -36,7 +37,9 @@ func solveDay(day int, challenge aoc2022Challenge, useExampleInput bool) {
 }
 
 func main() {
-	challenges := []aoc2022Challenge{}
+	challenges := []aoc2022Challenge{
+		&day01.Day01{},
+	}
 
 	var useExampleInput bool
 	var day int
