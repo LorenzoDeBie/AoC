@@ -6,6 +6,7 @@ import (
 	"github.com/LorenzoDeBie/AoC/2022/go/day01"
 	"github.com/LorenzoDeBie/AoC/2022/go/day02"
 	"github.com/LorenzoDeBie/AoC/2022/go/day03"
+	"github.com/LorenzoDeBie/AoC/2022/go/day04"
 	"os"
 )
 
@@ -43,6 +44,7 @@ func main() {
 		&day01.Day01{},
 		&day02.Day02{},
 		&day03.Day03{},
+		&day04.Day04{},
 	}
 
 	var useExampleInput bool
