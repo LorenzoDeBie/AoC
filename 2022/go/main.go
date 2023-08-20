@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/LorenzoDeBie/AoC/2022/go/day01"
 	"github.com/LorenzoDeBie/AoC/2022/go/day02"
+	"github.com/LorenzoDeBie/AoC/2022/go/day03"
 	"os"
 )
 
@@ -41,6 +42,7 @@ func main() {
 	challenges := []aoc2022Challenge{
 		&day01.Day01{},
 		&day02.Day02{},
+		&day03.Day03{},
 	}
 
 	var useExampleInput bool
