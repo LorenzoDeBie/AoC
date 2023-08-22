@@ -7,6 +7,8 @@ import (
 	"github.com/LorenzoDeBie/AoC/2022/go/day02"
 	"github.com/LorenzoDeBie/AoC/2022/go/day03"
 	"github.com/LorenzoDeBie/AoC/2022/go/day04"
+	"github.com/LorenzoDeBie/AoC/2022/go/day05"
+	"github.com/LorenzoDeBie/AoC/2022/go/globals"
 	"os"
 )
 
@@ -16,12 +18,12 @@ type aoc2022Challenge interface {
 	Part2()
 }
 
-func solveDay(day int, challenge aoc2022Challenge, useExampleInput bool) {
+func solveDay(day int, challenge aoc2022Challenge) {
 	fmt.Println("Solving Challenge", day+1)
 	fmt.Println("Reading input file")
 
 	inputFile := fmt.Sprintf("day%02d/input.txt", day+1)
-	if useExampleInput {
+	if globals.UseExampleInput {
 		inputFile = fmt.Sprintf("day%02d/input_test.txt", day+1)
 	}
 	data, err := os.ReadFile(inputFile)
@@ -40,26 +42,28 @@ func solveDay(day int, challenge aoc2022Challenge, useExampleInput bool) {
 }
 
 func main() {
+	fmt.Println(globals.UseExampleInput)
+	var day int
+	flag.BoolVar(&globals.UseExampleInput, "example", false, "Use the example input instead of the real input")
+	flag.IntVar(&day, "day", 0, "Which day to solve, 0 for all days")
+	flag.Parse()
+	fmt.Println(globals.UseExampleInput)
+
 	challenges := []aoc2022Challenge{
 		&day01.Day01{},
 		&day02.Day02{},
 		&day03.Day03{},
 		&day04.Day04{},
+		day05.New(),
 	}
-
-	var useExampleInput bool
-	var day int
-	flag.BoolVar(&useExampleInput, "example", false, "Use the example input instead of the real input")
-	flag.IntVar(&day, "day", 0, "Which day to solve, 0 for all days")
-	flag.Parse()
 
 	if day == 0 {
 		fmt.Println("Solving all challenges")
 		for day, challenge := range challenges {
-			solveDay(day, challenge, useExampleInput)
+			solveDay(day, challenge)
 		}
 	} else {
-		solveDay(day-1, challenges[day-1], useExampleInput)
+		solveDay(day-1, challenges[day-1])
 	}
 
 }
