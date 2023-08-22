@@ -8,6 +8,7 @@ import (
 	"github.com/LorenzoDeBie/AoC/2022/go/day03"
 	"github.com/LorenzoDeBie/AoC/2022/go/day04"
 	"github.com/LorenzoDeBie/AoC/2022/go/day05"
+	"github.com/LorenzoDeBie/AoC/2022/go/day06"
 	"github.com/LorenzoDeBie/AoC/2022/go/globals"
 	"os"
 )
@@ -55,6 +56,7 @@ func main() {
 		&day03.Day03{},
 		&day04.Day04{},
 		day05.New(),
+		&day06.Day06{},
 	}
 
 	if day == 0 {
