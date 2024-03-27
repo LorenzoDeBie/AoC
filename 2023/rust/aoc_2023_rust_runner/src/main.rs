@@ -79,7 +79,7 @@ fn main() {
     // get puzzle in put if get arg is set
     if args.get {
         info!("Start Downloading inputs for challenges");
-        for i in days {
+        for i in &days {
             info!("Day {:02}",i);
             let input: String;
             debug!("Checking if input dir exists");
@@ -92,7 +92,7 @@ fn main() {
                 None => std::env::var("AOC_SESSION").expect("Session key was not found in program args or env")
             };
             
-            input = match fetch_puzzle_input(args.year, i, &session) {
+            input = match fetch_puzzle_input(args.year, *i, &session) {
                 Ok(s) => s.clone(),
                 Err(err) => { error!("Failed to fetch puzzle input: {err}"); continue;}
             };
@@ -102,24 +102,16 @@ fn main() {
     }
 
     info!("Start Solving Challenges");
-    if args.day == 0 {
-        let result = aoc_2023_rust_lib::solve_all_days();
-        for (i,(p1, p2)) in result.iter().enumerate() {
-            println!("Day {:02}", i + 1);
-            println!("Part 1: {:?}", p1);
-            println!("Part 2: {:?}", p2);
-        }  
-        ()
+    for i in &days {
+        println!("Day {:02}", i);
+        // solve challenge
+        info!("Solving challenge");
+        match args.part {
+            1 => println!("Part 1: {:?}", aoc_2023_rust_lib::solve_part(*i, 1)),
+            2 => println!("Part 2: {:?}", aoc_2023_rust_lib::solve_part(*i, 2)),
+            0 => { println!("Part 1: {:?}", aoc_2023_rust_lib::solve_part(*i, 1)); println!("Part 2: {:#?}", aoc_2023_rust_lib::solve_part(*i, 2)) }
+            _ => { error!("Unknown part!"); exit(-1) }
+        };
     }
-
-    println!("Day {:02}", args.day);
-    // solve challenge
-    info!("Solving challenge");
-    match args.part {
-        1 => println!("Part 1: {:?}", aoc_2023_rust_lib::solve_part(args.day, 1)),
-        2 => println!("Part 2: {:?}", aoc_2023_rust_lib::solve_part(args.day, 2)),
-        0 => { println!("Part 1: {:?}", aoc_2023_rust_lib::solve_part(args.day, 1)); println!("Part 2: {:?}", aoc_2023_rust_lib::solve_part(args.day, 2)) }
-        _ => { error!("Unknown part!"); exit(-1) }
-    };
 
 }

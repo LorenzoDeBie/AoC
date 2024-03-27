@@ -18,4 +18,7 @@ create day:
     cargo generate --path ./days/daily-template --destination ./days --name {{day}}
 
 get-input day:
-    env && cargo run --bin aoc_2023_rust_runner -- -g -y 2023 -d {{day}}
+    cargo run --bin aoc_2023_rust_runner -- -g -y 2023 -d {{day}}
+
+run-all:
+    cargo run --bin aoc_2023_rust_runner -- -g -y 2023
