@@ -7,7 +7,7 @@ members = [
     'days/day-*'
 ]
 
-default_members = ["days/day-*"]
+# default_members = ["days/day-*"]
 
 [workspace.dependencies]
 glam = "0.27.0"
@@ -15,7 +15,7 @@ itertools = "0.12.0"
 nom = "7.1.3"
 petgraph = "0.6.4"
 rayon = "1.8.0"
-tracing = "0.1.40"
+tracing = { version = "0.1.40", features = ["log"] }
 tracing-subscriber = { version = "0.3.18", features = ["fmt", "env-filter"] }
 rstest = "0.18.2"
 rstest_reuse = "0.6.0"

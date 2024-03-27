@@ -9,10 +9,11 @@ bench-all:
     cargo bench -q > benchmarks.txt
 bench day part:
     cargo bench --bench {{day}}-bench {{part}} >> days/{{day}}.bench.txt
+# Not working on Mac without disableing System Integrity Protection
 flamegraph day part:
-    cargo flamegraph --profile flamegraph --root --package days/{{day}} --bin {{part}} -o flamegraphs/{{day}}--{{part}}.svg
+    cargo flamegraph --profile flamegraph --root --package {{day}} --bin {{day}}-{{part}} -o flamegraphs/{{day}}--{{part}}.svg
 dhat day part:
-    cargo run --profile dhat --features dhat-heap --package days/{{day}} --bin {{part}}
+    cargo run --profile dhat --features dhat-heap --package {{day}} --bin {{day}}-{{part}}
 # create the directory for a new day's puzzle and fetch the input
 create day:
     cargo generate --path ./days/daily-template --destination ./days --name {{day}}
