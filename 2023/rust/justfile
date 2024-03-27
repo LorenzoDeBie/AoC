@@ -2,13 +2,13 @@
 work day part:
     cargo watch -w days/{{day}} -x "check -p {{day}}" -s "just test {{day}} {{part}}" -s "just lint {{day}}" -s "just bench {{day}} {{part}}" 
 lint day:
-    cargo clippy -p days/{{day}}
+    cargo clippy -p {{day}}
 test day part:
-    cargo nextest run -p days/{{day}} {{part}}
+    cargo nextest run -p {{day}} {{part}}
 bench-all:
     cargo bench -q > benchmarks.txt
 bench day part:
-    cargo bench --bench days/{{day}}-bench {{part}} >> days/{{day}}.bench.txt
+    cargo bench --bench {{day}}-bench {{part}} >> days/{{day}}.bench.txt
 flamegraph day part:
     cargo flamegraph --profile flamegraph --root --package days/{{day}} --bin {{part}} -o flamegraphs/{{day}}--{{part}}.svg
 dhat day part:
@@ -16,3 +16,6 @@ dhat day part:
 # create the directory for a new day's puzzle and fetch the input
 create day:
     cargo generate --path ./days/daily-template --destination ./days --name {{day}}
+
+get-input day:
+    env && cargo run --bin aoc_2023_rust_runner -- -g -y 2023 -d {{day}}

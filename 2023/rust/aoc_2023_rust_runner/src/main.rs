@@ -8,6 +8,7 @@ use log::{LevelFilter, error, info, debug};
 
 use chrono::prelude::*;
 
+use dotenv::dotenv;
 
 #[derive(Parser)]
 struct Args {
@@ -45,7 +46,7 @@ fn fetch_puzzle_input(year: i32, day: u8, session: &str) -> Result<String,  Box<
     debug!("Fetching puzzle input from adventofcode.com");
     let http_client = reqwest::blocking::Client::new();
     let res = http_client
-        .get(format!("https://adventofcode.com/{}/day/{}/input", year, day+1))
+        .get(format!("https://adventofcode.com/{}/day/{}/input", year, day))
         .header(reqwest::header::COOKIE, format!("session={}", session))
         .send()?;
 
@@ -64,20 +65,31 @@ fn main() {
         _ => env_logger::Builder::new().filter_level(LevelFilter::Trace).init(),
     }
 
-    info!("Start Solving Challenges");
-    for i in 1..aoc_2023_rust_lib::NUM_DAYS+1 {
-        println!("Day {:02}", i);
-        let input: String;
-        // get puzzle in put if get arg is set
-        if args.get {
+    // parse dotenv
+    match dotenv() {
+        Ok(_s) => debug!("Loaded dotenv"),
+        Err(_e) => debug!("Failed to load dotenv")   
+    }
+
+    let days = match args.day {
+        0 => (1..aoc_2023_rust_lib::NUM_DAYS+1).collect::<Vec<u8>>(),
+        _ => vec![args.day, 1]
+    };
+    
+    // get puzzle in put if get arg is set
+    if args.get {
+        info!("Start Downloading inputs for challenges");
+        for i in days {
+            info!("Day {:02}",i);
+            let input: String;
             debug!("Checking if input dir exists");
             let mut input_file = OpenOptions::new().write(true).truncate(true)
-                .create(true).open(format!("input/day{:02}.txt", i + 1)).expect("Failed to open or create file!");
+                .create(true).open(format!("days/day-{:02}/input.txt", i)).expect("Failed to open or create file!");
 
             info!("Downloading puzzle input from adventofcode.com");
             let session = match args.session {
                 Some(ref s) => s.clone(),
-                None => std::env::var("AOC_TOKEN").expect("Session key was not found in program args or env")
+                None => std::env::var("AOC_SESSION").expect("Session key was not found in program args or env")
             };
             
             input = match fetch_puzzle_input(args.year, i, &session) {
@@ -87,14 +99,27 @@ fn main() {
             debug!("Writing puzzle input to file");
             input_file.write_all(input.as_bytes()).expect("Failed to write to input file!");
         }
-
-        // solve challenge
-        info!("Solving challenge");
-        match args.part {
-            1 => println!("Part 1: {:?}", aoc_2023_rust_lib::solve_part(i, 1)),
-            2 => println!("Part 2: {:?}", aoc_2023_rust_lib::solve_part(i, 2)),
-            0 => { println!("Part 1: {:?}", aoc_2023_rust_lib::solve_part(i, 1)); println!("Part 2: {:?}", aoc_2023_rust_lib::solve_part(i, 2)) }
-            _ => { error!("Unknown part!"); exit(-1) }
-        };
     }
+
+    info!("Start Solving Challenges");
+    if args.day == 0 {
+        let result = aoc_2023_rust_lib::solve_all_days();
+        for (i,(p1, p2)) in result.iter().enumerate() {
+            println!("Day {:02}", i + 1);
+            println!("Part 1: {:?}", p1);
+            println!("Part 2: {:?}", p2);
+        }  
+        ()
+    }
+
+    println!("Day {:02}", args.day);
+    // solve challenge
+    info!("Solving challenge");
+    match args.part {
+        1 => println!("Part 1: {:?}", aoc_2023_rust_lib::solve_part(args.day, 1)),
+        2 => println!("Part 2: {:?}", aoc_2023_rust_lib::solve_part(args.day, 2)),
+        0 => { println!("Part 1: {:?}", aoc_2023_rust_lib::solve_part(args.day, 1)); println!("Part 2: {:?}", aoc_2023_rust_lib::solve_part(args.day, 2)) }
+        _ => { error!("Unknown part!"); exit(-1) }
+    };
+
 }

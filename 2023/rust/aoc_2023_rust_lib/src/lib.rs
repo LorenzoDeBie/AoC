@@ -7,7 +7,7 @@ pub fn solve_part(day: u8, part: u8) -> Result<String, Box<dyn Error>> {
     info!("Fetching input data from local file");
     let input_path : String;
 
-    input_path = format!("days/day-{:02}/input{}.txt", day, part);
+    input_path = format!("days/day-{:02}/input.txt", day);
     
 
     let input = match fs::read_to_string(input_path) {
@@ -33,21 +33,4 @@ pub fn solve_all_days() -> Vec<(Result<String, Box<dyn Error>>, Result<String, B
         res.push(solve_day(i));
     }
     return res;
-}
-
-
-
-pub fn add(left: usize, right: usize) -> usize {
-    left + right
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
-    }
 }

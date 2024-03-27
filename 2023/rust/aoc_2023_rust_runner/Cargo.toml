@@ -16,3 +16,4 @@ log = "0.4.20"
 reqwest = { version = "0.12.2", features = ["blocking"] }
 chrono = "0.4.31"
 aoc_2023_rust_lib = {path = "../aoc_2023_rust_lib/"}
+dotenv = "0.15.0"
