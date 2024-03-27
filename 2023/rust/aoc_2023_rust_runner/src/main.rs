@@ -1,16 +1,12 @@
-use std::{process::exit, fs::{OpenOptions, self}, error::Error};
+use std::{error::Error, fs::OpenOptions, process::exit};
 
 use std::io::Write;
 
 use clap::Parser;
-use env_logger;
 
-use log::{LevelFilter, error, info, debug, warn};
+use log::{LevelFilter, error, info, debug};
 
 use chrono::prelude::*;
-use aoc_2023_rust::AdventOfCode;
-
-use aoc_2023_rust::days::day01::*;
 
 
 #[derive(Parser)]
@@ -44,7 +40,7 @@ struct Args {
     verbose: u8,
 }
 
-fn fetch_puzzle_input(year: i32, day: usize, session: &str) -> Result<String,  Box<dyn Error>> {
+fn fetch_puzzle_input(year: i32, day: u8, session: &str) -> Result<String,  Box<dyn Error>> {
 
     debug!("Fetching puzzle input from adventofcode.com");
     let http_client = reqwest::blocking::Client::new();
@@ -68,25 +64,10 @@ fn main() {
         _ => env_logger::Builder::new().filter_level(LevelFilter::Trace).init(),
     }
 
-    let mut aoc ;
-
-    if args.day != 0 {
-        aoc = AdventOfCode { days: vec![] };
-        match args.day {
-            1 => aoc.days.push(Box::new(Day01::default())),
-            _ => { error!("Unknown day!"); exit(-1) }
-        }
-    } else {
-        aoc = AdventOfCode { days: vec![
-            Box::new(Day01::default())
-        ] };
-    }
-
     info!("Start Solving Challenges");
-
-    for (i, day) in aoc.days.iter_mut().enumerate() {
-        println!("Day {:02}", i+1);
-        let mut input: String;
+    for i in 1..aoc_2023_rust_lib::NUM_DAYS+1 {
+        println!("Day {:02}", i);
+        let input: String;
         // get puzzle in put if get arg is set
         if args.get {
             debug!("Checking if input dir exists");
@@ -94,44 +75,25 @@ fn main() {
                 .create(true).open(format!("input/day{:02}.txt", i + 1)).expect("Failed to open or create file!");
 
             info!("Downloading puzzle input from adventofcode.com");
-            let session = args.session.clone().or_else(|| {std::env::var("AOC_TOKEN").ok() });
-            if session.is_some() {
-                input = match fetch_puzzle_input(args.year, i, &session.unwrap()) {
-                    Ok(s) => s.clone(),
-                    Err(err) => { error!("Failed to fetch puzzle input: {err}"); continue;}
-                };
-                debug!("Writing puzzle input to file");
-                input_file.write_all(input.as_bytes()).expect("Failed to write to input file!");
-            }
-            else {
-                warn!("Failed to parse AOC_TOKEN from args or env");
-            }
+            let session = match args.session {
+                Some(ref s) => s.clone(),
+                None => std::env::var("AOC_TOKEN").expect("Session key was not found in program args or env")
+            };
+            
+            input = match fetch_puzzle_input(args.year, i, &session) {
+                Ok(s) => s.clone(),
+                Err(err) => { error!("Failed to fetch puzzle input: {err}"); continue;}
+            };
+            debug!("Writing puzzle input to file");
+            input_file.write_all(input.as_bytes()).expect("Failed to write to input file!");
         }
-
-        info!("Fetching input data from local file");
-        let input_path : String;
-        if args.sample {
-            input_path = format!("input/day{:02}_sample.txt", i + 1);
-        }
-        else {
-            input_path = format!("input/day{:02}.txt", i + 1);
-        }
-
-        input = match fs::read_to_string(input_path) {
-            Ok(s) => s.clone(),
-            Err(err) => { error!("Failed to read puzzle input from fs: {err}"); continue;}
-        };
-
-
-        info!("Parsing input");
-        day.parse_input(input);
 
         // solve challenge
         info!("Solving challenge");
         match args.part {
-            1 => println!("Part 1: {}", day.part1()),
-            2 => println!("Part 2: {}", day.part2()),
-            0 => { println!("Part 1: {}", day.part1()); println!("Part 2: {}", day.part2()) }
+            1 => println!("Part 1: {:?}", aoc_2023_rust_lib::solve_part(i, 1)),
+            2 => println!("Part 2: {:?}", aoc_2023_rust_lib::solve_part(i, 2)),
+            0 => { println!("Part 1: {:?}", aoc_2023_rust_lib::solve_part(i, 1)); println!("Part 2: {:?}", aoc_2023_rust_lib::solve_part(i, 2)) }
             _ => { error!("Unknown part!"); exit(-1) }
         };
     }

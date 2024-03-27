@@ -1,0 +1,16 @@
+[package]
+name = "aoc_2023_rust_lib"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+name = "aoc_2023_rust_lib"
+path = "src/lib.rs"
+
+[dependencies]
+log = "0.4.20"
+miette.workspace = true
+day-01 = {path = "../days/day-01"}
+day-02 = {path = "../days/day-02"}
