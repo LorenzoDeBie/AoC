@@ -1,2 +1,0 @@
-day_01_bench  fastest       │ slowest       │ median        │ mean          │ samples │ iters
-╰─ part1      
