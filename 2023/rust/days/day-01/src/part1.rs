@@ -1,9 +1,7 @@
 use crate::custom_error::AocError;
 use tracing::{debug, log::info};
 #[tracing::instrument]
-pub fn process(
-    _input: &str,
-) -> miette::Result<String, AocError> {
+pub fn process(_input: &str) -> miette::Result<String, AocError> {
     info!("Solving Day1, part 1");
     let result = _input
         // split into lines
@@ -12,17 +10,21 @@ pub fn process(
         .map(|line| {
             debug!("Analyzing line {line}");
             // get first digit
-            let first = line.chars().find_map(|c| {
-                c.to_digit(10)
-            }).expect("Should be a number!");
+            let first = line
+                .chars()
+                .find_map(|c| c.to_digit(10))
+                .expect("Should be a number!");
             // get last digit
-            let last = line.chars().rev().find_map(|c| {
-                c.to_digit(10)
-            }).expect("Should be a number!");
+            let last = line
+                .chars()
+                .rev()
+                .find_map(|c| c.to_digit(10))
+                .expect("Should be a number!");
             // return concatenated digit
             first * 10 + last
             // sum all the digits
-        }).sum::<u32>();
+        })
+        .sum::<u32>();
     Ok(result.to_string())
 }
 

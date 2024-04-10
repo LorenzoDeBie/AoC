@@ -1,25 +1,31 @@
-use nom::{bytes::complete::tag, character::complete::{self, alpha1, digit1}, multi::separated_list1, sequence::{preceded, separated_pair}, IResult};
+use nom::{
+    bytes::complete::tag,
+    character::complete::{self, alpha1, digit1},
+    multi::separated_list1,
+    sequence::{preceded, separated_pair},
+    IResult,
+};
 
 use crate::custom_error::AocError;
 
 enum CubeColor {
     Red,
     Green,
-    Blue
+    Blue,
 }
 
 struct Cube {
     amount: u32,
-    color: CubeColor
+    color: CubeColor,
 }
 
 struct Round {
-    cubes: Vec<Cube>
+    cubes: Vec<Cube>,
 }
 
 struct Game {
     id: u8,
-    rounds: Vec<Round>
+    rounds: Vec<Round>,
 }
 
 fn parse_cube(input: &str) -> IResult<&str, Cube> {
@@ -28,53 +34,50 @@ fn parse_cube(input: &str) -> IResult<&str, Cube> {
         "red" => CubeColor::Red,
         "blue" => CubeColor::Blue,
         "green" => CubeColor::Green,
-        _ => panic!("Only red, blue or green cubes should exist")
+        _ => panic!("Only red, blue or green cubes should exist"),
     };
-    Ok((input, Cube{
-        amount,
-        color: colour
-    }))
+    Ok((
+        input,
+        Cube {
+            amount,
+            color: colour,
+        },
+    ))
 }
 
 fn parse_round(input: &str) -> IResult<&str, Round> {
     let (input, cubes) = separated_list1(tag(", "), parse_cube)(input)?;
-    Ok((input, Round {
-        cubes
-    }))
+    Ok((input, Round { cubes }))
 }
 
 fn parse_game(input: &str) -> IResult<&str, Game> {
     let (input, id) = preceded(tag("Game "), digit1)(input)?;
     let (input, rounds) = preceded(tag(": "), separated_list1(tag("; "), parse_round))(input)?;
-    Ok((input, Game{
-        id: id.parse().expect("game id should be a parseable number"),
-        rounds,
-    }))
+    Ok((
+        input,
+        Game {
+            id: id.parse().expect("game id should be a parseable number"),
+            rounds,
+        },
+    ))
 }
 
-
-#[tracing::instrument] 
-pub fn process(
-    _input: &str,
-) -> miette::Result<String, AocError> {
-
+#[tracing::instrument]
+pub fn process(_input: &str) -> miette::Result<String, AocError> {
     let result = _input
         .lines()
         .filter_map(|line| -> Option<u32> {
-            let (_, game)= parse_game(line).expect("each line should contain a valid game");
+            let (_, game) = parse_game(line).expect("each line should contain a valid game");
             let valid = game.rounds.iter().all(|round| {
-                round.cubes.iter().all(|cube| {
-                    match cube.color {
-                        CubeColor::Red => cube.amount <= 12 ,
-                        CubeColor::Green => cube.amount <= 13,
-                        CubeColor::Blue => cube.amount <= 14,
-                    }
+                round.cubes.iter().all(|cube| match cube.color {
+                    CubeColor::Red => cube.amount <= 12,
+                    CubeColor::Green => cube.amount <= 13,
+                    CubeColor::Blue => cube.amount <= 14,
                 })
             });
             if valid {
                 Some(u32::from(game.id))
-            }
-            else {
+            } else {
                 None
             }
         })
