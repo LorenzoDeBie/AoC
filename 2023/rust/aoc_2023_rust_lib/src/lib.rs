@@ -17,7 +17,7 @@ pub fn solve_part(day: u8, part: u8) -> Result<String, Box<dyn Error>> {
         (1, 1) => day_01::part1::process(&input).map_err(|e| e.into()),
         (1, 2) => day_01::part2::process(&input).map_err(|e| e.into()),
         (2, 1) => day_02::part1::process(&input).map_err(|e| e.into()),
-        //(2, 2) => day_02::part2::process(&input).map_err(|e| e.into()),
+        (2, 2) => day_02::part2::process(&input).map_err(|e| e.into()),
         _ => Err("That day or part does not exist!")?,
     }
 }
