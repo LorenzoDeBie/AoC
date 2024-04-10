@@ -45,3 +45,5 @@ rust-project.json
 
 .env
 days/day-*/input.txt
+days/day-*.bench.txt
+dhat-heap.json
