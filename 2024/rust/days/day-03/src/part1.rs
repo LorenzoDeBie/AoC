@@ -1,28 +1,37 @@
-use nom::bytes::complete::{tag, take_until};
-use nom::character::complete::{anychar, digit1};
-use nom::IResult;
-use nom::multi::{fold_many1, many0, many1, many_till, separated_list0, separated_list1};
-use nom::sequence::{preceded, separated_pair, terminated};
-use nom::error::Error;
 use crate::custom_error::AocError;
+use nom::bytes::complete::tag;
+use nom::character::complete::{anychar, digit1};
+use nom::combinator::map;
+use nom::error::Error;
+use nom::multi::{many1, many_till};
+use nom::sequence::{preceded, separated_pair, terminated};
+use nom::IResult;
+
+fn parse_mult_ops(input: &str) -> IResult<&str, Vec<(&str, &str)>> {
+    many1(map(
+        many_till(
+            anychar::<&str, Error<_>>,
+            separated_pair(
+                preceded(tag("mul("), digit1),
+                tag(","),
+                terminated(digit1, tag(")")),
+            ),
+        ),
+        |o1| o1.1,
+    ))(input)
+}
 
 #[tracing::instrument]
-pub fn process(
-    _input: &str,
-) -> miette::Result<String, AocError> {
-    let result = fold_many1(
-        many_till(anychar::<&str, Error<_>>, separated_pair(
-            preceded(tag("mul("), digit1), tag(","), terminated(digit1, tag(")")))
-        ),
-        || { 0 },
-        |acc: u32, item| {
-            let val1 : u32 = item.1.0.parse().expect("should parse");
-            let val2 : u32 = item.1.1.parse().expect("should parse");
-            acc + (val1 * val2)
-        }
-    )
-        (_input).expect("should_parse").1;
-    Ok(result.to_string())
+pub fn process(_input: &str) -> miette::Result<String, AocError> {
+    let mult_ops = parse_mult_ops(_input).expect("should parse").1;
+
+    Ok(mult_ops
+        .iter()
+        .map(|(x, y)| -> u32 {
+            x.parse::<u32>().expect("should parse") * y.parse::<u32>().expect("should parse")
+        })
+        .sum::<u32>()
+        .to_string())
 }
 
 #[cfg(test)]
