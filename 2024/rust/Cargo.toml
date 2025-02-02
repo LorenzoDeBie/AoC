@@ -1,0 +1,50 @@
+[workspace]
+resolver = "2"
+
+members = [
+    "aoc_rust_lib",
+    "aoc_rust_runner",
+    "days/day-*"
+]
+
+# default_members = ["days/day-*"]
+
+[workspace.dependencies]
+glam = "0.27.0"
+itertools = "0.12.0"
+nom = "7.1.3"
+petgraph = "0.6.4"
+rayon = "1.8.0"
+tracing = { version = "0.1.40", features = ["log"] }
+tracing-subscriber = { version = "0.3.18", features = ["fmt", "env-filter"] }
+rstest = "0.19.0"
+rstest_reuse = "0.6.0"
+divan = "0.1.11"
+tracing-tracy = "0.11.0"
+tracy-client = "0.17.0"
+tracy-client-sys = "0.22.0"
+miette = { version = "7.2.0", features = ["fancy"] }
+thiserror = "1.0.50"
+dhat = "0.3.2"
+nom_locate = "4.2.0"
+nom-supreme = "0.8.0"
+test-log = { version = "0.2.13", default-features = false, features = [
+    "trace",
+] }
+indicatif = { version = "0.17.7", features = ["rayon"] }
+
+[profile.flamegraph]
+inherits = "release"
+debug = true
+
+[profile.dhat]
+inherits = "release"
+debug = 1
+
+# Defines a size-optimized profile for the WASM bundle in release mode
+[profile.wasm-release]
+inherits = "release"
+opt-level = 'z'
+lto = true
+codegen-units = 1
+panic = "abort"
