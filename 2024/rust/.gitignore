@@ -47,3 +47,5 @@ rust-project.json
 days/day-*/input.txt
 days/day-*.bench.txt
 dhat-heap.json
+
+/target/
