@@ -128,11 +128,11 @@ fn main() {
         // solve challenge
         info!("Solving challenge");
         match args.part {
-            1 => println!("Part 1: {:?}", aoc_rust_lib::solve_part(*i, 1)),
-            2 => println!("Part 2: {:?}", aoc_rust_lib::solve_part(*i, 2)),
+            1 => println!("Part 1: {:?}", aoc_rust_lib::solve_part(*i, 1).unwrap()),
+            2 => println!("Part 2: {:?}", aoc_rust_lib::solve_part(*i, 2).unwrap()),
             0 => {
-                println!("Part 1: {:?}", aoc_rust_lib::solve_part(*i, 1));
-                println!("Part 2: {:#?}", aoc_rust_lib::solve_part(*i, 2))
+                println!("Part 1: {:?}", aoc_rust_lib::solve_part(*i, 1).unwrap());
+                println!("Part 2: {:#?}", aoc_rust_lib::solve_part(*i, 2).unwrap());
             }
             _ => {
                 error!("Unknown part!");
